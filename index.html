@@ -10,26 +10,79 @@
     <h1>Weather Dashboard</h1>
   </header>
 
-  <aside>
-    <form id="search-form">
-      <input type="text" id="city-input" placeholder="Enter a city">
-      <button type="submit"><img src="./assets/images/search-icon.svg"></button>
-    </form>
-    <!-- Search history -->
-    <ul class="list search-history hidden" id="searchHistoryList">
-      <!-- List items will be added dynamically using JavaScript-->
-      <li>asdfghj</li>
-      <li>asdfghjk</li>
-      <li>asdfghjk</li>
-    </ul>
-  </aside>
-
+  
+  
 
 
   <main>
-    <div id="current-weather"></div>
-    <div id="forecast"></div>
-    <div id="search-history"></div>
+    <div class="box">
+      <form id="search-form">
+        <input type="text" id="city-input" placeholder="Enter a city">
+        <button type="submit">Search</button>
+      </form>
+      <!-- Search history -->
+      <ul class="list search-history hidden" id="searchHistoryList">
+        <!-- List items will be added dynamically using JavaScript-->
+        <li>asdfghj</li>
+        <li>asdfghjk</li>
+        <li>asdfghjk</li>
+      </ul>
+    </div>
+    <div class="box" id="current-weather">
+      <h1>atlanta (9/13/2022)</h1>
+      <p>temp:76 fahreneati</p>
+      <p>desciription</p>
+      <p>wind: 8vmph</p>
+      <p>humidt:44%</p>
+    </div>
+
+    <div id="forecast">
+      <h1>5-Day Forecast:</h1>
+      <div class="container">
+          <div class="card">
+            <p>9/14/22</p>
+            <p>logo</p>
+            <p>temp 90 de</p>
+            <p>wind sped</p>
+            <p>humisdty</p>
+          </div>
+
+          <div class="card">
+            <p>9/14/22</p>
+            <p>logo</p>
+            <p>temp 90 de</p>
+            <p>wind sped</p>
+            <p>humisdty</p>
+          </div>
+
+          <div class="card">
+            <p>9/14/22</p>
+            <p>logo</p>
+            <p>temp 90 de</p>
+            <p>wind sped</p>
+            <p>humisdty</p>
+          </div>
+
+          <div class="card">
+            <p>9/14/22</p>
+            <p>logo</p>
+            <p>temp 90 de</p>
+            <p>wind sped</p>
+            <p>humisdty</p>
+          </div>
+
+          <div class="card">
+            <p>9/14/22</p>
+            <p>logo</p>
+            <p>temp 90 de</p>
+            <p>wind sped</p>
+            <p>humisdty</p>
+          </div>
+          
+      </div>
+
+    </div>
+    
   </main>
 
   <script src="./assets/js/script.js"></script>
