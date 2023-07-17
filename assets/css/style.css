@@ -11,7 +11,12 @@ header {
   text-align: center;
 }
 h1 {
-  font-size: 20px;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+}
+p {
+  font-size: 10px;
   margin: 0;
 }
 
@@ -26,12 +31,23 @@ form {
 
 input[type="text"] {
   padding: 5px;
-  font-size: 16px;
+  font-size: 10px;
 }
 
 button {
   padding: 5px 10px;
-  font-size: 16px;
+  font-size: 10px;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  
+}
+
+li {
+  font-size: 10px;
 }
 
 
@@ -40,11 +56,13 @@ button {
   margin: 1em;
   padding: 1em;
   border: solid black 3px;
+  background-color: pink;
 }
 .box {
   margin: 10px;
   padding: 10px;
   border: solid black 3px;
+  background-color: rgb(75, 156, 228);
 }
 #forecast {
   display: flex;
@@ -53,13 +71,17 @@ button {
 .card {
   display: flex;
   flex-direction: column;
+  margin: 0;
 }
 .container {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 .ust {
   display: flex;
   flex-direction: row;
-  border: solid black 3px;
+  flex-wrap: wrap;
+  
 }
