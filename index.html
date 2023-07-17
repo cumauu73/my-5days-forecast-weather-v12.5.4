@@ -1,31 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>my-5days-forecast-weather-v12.5.4</title>
-  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
 </head>
-
 <body>
-  <div class="card">
-    <div class="search">
-      <input type="text" class="search-bar" placeholder="City Name">
-      <button><img src="./assets/images/search-icon.svg" alt=""></button>
-    </div>
-    <div class="weather loading">
-      <h2 class="city">Weather in Denver</h2>
-      <h1 class="temp">51°F</h1>
-      <div class="flex">
-        <img src="https://openweathermap.org/img/wn/04n.png" alt="" class="icon" />
-        <div class="description">Cloudy</div>
-      </div>
-      <div class="humidity">Humidity: 60%</div>
-      <div class="wind">Wind speed: 6.2 km/h</div>
-    </div>
-  </div>
+
+  <header>
+    <h1>Weather Dashboard</h1>
+  </header>
+
+  <aside>
+    <form id="search-form">
+      <input type="text" id="city-input" placeholder="Enter a city">
+      <button type="submit"><img src="./assets/images/search-icon.svg"></button>
+    </form>
+    <!-- Search history -->
+    <ul class="list search-history hidden" id="searchHistoryList">
+      <!-- List items will be added dynamically using JavaScript-->
+      <li>asdfghj</li>
+      <li>asdfghjk</li>
+      <li>asdfghjk</li>
+    </ul>
+  </aside>
+
+
+
+  <main>
+    <div id="current-weather"></div>
+    <div id="forecast"></div>
+    <div id="search-history"></div>
+  </main>
+
   <script src="./assets/js/script.js"></script>
 </body>
-
 </html>
