@@ -1,85 +1,131 @@
 var apiKey = '312ef17758b755a8564935f0cd1d338b'
 var fetchCurrent = 'https://api.openweathermap.org/data/2.5/weather?q='
-var fetchForecast = 'https://api.openweathermap.org/data/2.5/forecast?q='
-var searchBtn = document.querySelector('button')
-var cityinput = document.getElementById('cityinput')
-var searched = cityinput.value
+
+// Function to fetch weather data and update the current weather element
+function fetchCurrentWeather(city) {
+    const apiKey = '312ef17758b755a8564935f0cd1d338b';
+    const url = 'https://api.openweathermap.org/data/2.5/weather?q='+city+'&appid='+apiKey+'';
+  
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        // Extract the required data from the API response
+        const cityName = data.name;
+        const date = new Date(data.dt * 1000).toLocaleDateString();
+        const temperature = data.main.temp;
+        const description = data.weather[0].description;
+        const windSpeed = data.wind.speed;
+        const humidity = data.main.humidity;
+  
+        // Update the current weather element with the fetched data
+        const currentWeatherElement = document.getElementById('current-weather');
+        currentWeatherElement.innerHTML = `
+          <h1>${cityName} (${date})</h1>
+          <p>Temperature: ${temperature} K</p>
+          <p>Description: ${description}</p>
+          <p>Wind: ${windSpeed} m/s</p>
+          <p>Humidity: ${humidity}%</p>
+        `;
+      })
+      .catch(error => {
+        console.log('An error occurred while fetching weather data:', error);
+      });
+  }
+  
+  // Event listener for the search form submission
+  const searchForm = document.getElementById('search-form');
+  searchForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const cityInput = document.getElementById('cityinput');
+    const city = cityInput.value.trim();
+  
+    if (city !== '') {
+      fetchCurrentWeather(city);
+    }
+  
+    cityInput.value = '';
+  });
+  
+// var fetchForecast = 'https://api.openweathermap.org/data/2.5/forecast?q='
+// var searchBtn = document.querySelector('button')
+// var cityinput = document.getElementById('cityinput')
+// var searched = cityinput.value
 
 // click listener for search button
-searchBtn.addEventListener('click', function (event) {
-    var searched = cityinput.value
-    event.preventDefault()
-    getForecastByFetch(searched)
-    getCurrentWeatherByFetch(searched)
+// searchBtn.addEventListener('click', function (event) {
+//     var searched = cityinput.value
+//     event.preventDefault()
+//     getForecastByFetch(searched)
+//     getCurrentWeatherByFetch(searched)
 
-});
-
-
-// when user press ENTER key same to click
-cityinput.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        searchBtn.click();
-    }
-});
+// });
 
 
+// // when user press ENTER key same to click
+// cityinput.addEventListener("keypress", function (event) {
+//     if (event.key === "Enter") {
+//         event.preventDefault();
+//         searchBtn.click();
+//     }
+// });
 
+// fetch('https://api.openweathermap.org/data/2.5/weather?q='++ '&units=imperial&appid=' + apiKey)
+        
 
 // Current Weather Function
-function getCurrentWeatherByFetch(cityName) {
-    fetch(fetchCurrent + cityName + '&units=imperial&appid=' + apiKey)
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (weatherData) {
+// function getCurrentWeatherByFetch(cityName) {
+//     fetch(fetchCurrent + cityName + '&units=imperial&appid=' + apiKey)
+//         .then(function (response) {
+//             return response.json()
+//         })
+//         .then(function (weatherData) {
 
-            console.log(weatherData)
-            // Gets current Weather Icon
-            var iconID = weatherData.weather[0].icon
-            var iconImg = document.createElement('img')
-            iconImg.src = 'https://openweathermap.org/img/wn/' + iconID + '.png'
+//             console.log(weatherData)
+//             Gets current Weather Icon
+//             var iconID = weatherData.weather[0].icon
+//             var iconImg = document.createElement('img')
+//             iconImg.src = 'https://openweathermap.org/img/wn/' + iconID + '.png'
             
-            // Gets city name
-            var city = weatherData.name
-            var cityEl = document.createElement('h3')
-            cityEl.innerText = 'Current weather for: ' + city
-            searched.appendChild(cityEl)
+//             // Gets city name
+//             var city = weatherData.name
+//             var cityEl = document.createElement('h3')
+//             cityEl.innerText = 'Current weather for: ' + city
+//             searched.appendChild(cityEl)
 
-            // Current Sky Conditions
-            var currentSkyCondition = weatherData.weather[0].main
-            var currentSkyConditionEl = document.createElement('p')
-            currentSkyConditionEl.classList.add('skydescription')
-            currentSkyConditionEl.innerText = currentSkyCondition
+//             // Current Sky Conditions
+//             var currentSkyCondition = weatherData.weather[0].main
+//             var currentSkyConditionEl = document.createElement('p')
+//             currentSkyConditionEl.classList.add('skydescription')
+//             currentSkyConditionEl.innerText = currentSkyCondition
             
-            // Current Temp
-            var currentTemp = weatherData.main.temp
-            var currentTempEl = document.createElement('li')
-            currentTempEl.innerText = "Temp: " + currentTemp
+//             // Current Temp
+//             var currentTemp = weatherData.main.temp
+//             var currentTempEl = document.createElement('li')
+//             currentTempEl.innerText = "Temp: " + currentTemp
             
-            // Current Humidity
-            var currentHumidity = weatherData.main.temp
-            var currentHumidityEl = document.createElement('li')
-            currentHumidityEl.innerText = "Humidity: " + currentHumidity
+//             // Current Humidity
+//             var currentHumidity = weatherData.main.temp
+//             var currentHumidityEl = document.createElement('li')
+//             currentHumidityEl.innerText = "Humidity: " + currentHumidity
             
-            // Current windspeed
-            var currentWindSpeed = weatherData.wind.speed
-            var currentWindSpeedEl = document.createElement('li')
-            currentWindSpeedEl.innerText = "Wind: " + currentWindSpeed
+//             // Current windspeed
+//             var currentWindSpeed = weatherData.wind.speed
+//             var currentWindSpeedEl = document.createElement('li')
+//             currentWindSpeedEl.innerText = "Wind: " + currentWindSpeed
             
-            // DOM appends
-            var weatherCard = document.createElement('div')
-            weatherCard.classList.add('currentWeatherCard')
-            weatherCard.appendChild(iconImg)
-            weatherCard.appendChild(currentSkyConditionEl)
-            weatherCard.appendChild(currentTempEl)
-            weatherCard.appendChild(currentHumidityEl)
-            weatherCard.appendChild(currentWindSpeedEl)
-            searched.appendChild(weatherCard)
+//             // DOM appends
+//             var weatherCard = document.createElement('div')
+//             weatherCard.classList.add('currentWeatherCard')
+//             weatherCard.appendChild(iconImg)
+//             weatherCard.appendChild(currentSkyConditionEl)
+//             weatherCard.appendChild(currentTempEl)
+//             weatherCard.appendChild(currentHumidityEl)
+//             weatherCard.appendChild(currentWindSpeedEl)
+//             searched.appendChild(weatherCard)
 
 
-        })
-}
+//         })
+// }
 
 
 
