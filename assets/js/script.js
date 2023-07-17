@@ -1,6 +1,8 @@
-var citySearched = document.getElementById('citySearched')
+var apiKey = '312ef17758b755a8564935f0cd1d338b'
+var fetchCurrent = 'https://api.openweathermap.org/data/2.5/weather?q='
+var fetchForecast = 'https://api.openweathermap.org/data/2.5/forecast?q='
 var searchBtn = document.querySelector('button')
-var apiKey = '59a3c0db12e1f890c3e94259c9168e7f'
+var citySearched = document.getElementById('citySearched')
 var forecastContainer = document.getElementById('forecastContainer')
 var searched = citySearched.value
 
@@ -9,7 +11,7 @@ var searched = citySearched.value
 
 // Current Weather Function
 function getCurrentWeatherByFetch(cityName) {
-    fetch('https://api.openweathermap.org/data/2.5/weather?q=' + cityName + '&units=imperial&appid=' + apiKey)
+    fetch(fetchCurrent + cityName + '&units=imperial&appid=' + apiKey)
         .then(function (response) {
             return response.json()
         })
@@ -66,7 +68,7 @@ function getCurrentWeatherByFetch(cityName) {
 
 // Five Day Forecast Function
 function getForecastByFetch(cityName) {
-    fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=' + apiKey)
+    fetch(fetchForecast + cityName + '&units=imperial&appid=' + apiKey)
         .then(function (response) {
             return response.json()
         })
