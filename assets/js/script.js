@@ -1,293 +1,146 @@
+var citySearched = document.getElementById('citySearched')
+var searchBtn = document.querySelector('button')
+var apiKey = '59a3c0db12e1f890c3e94259c9168e7f'
+var forecastContainer = document.getElementById('forecastContainer')
+var searched = citySearched.value
 
-const apiKey = '312ef17758b755a8564935f0cd1d338b'; // Replace with your own OpenWeatherMap API key
 
-// Event listener for form submission
-document.getElementById('search-form').addEventListener('submit', function(event) {
-  event.preventDefault();
-  const city = document.getElementById('city-input').value;
-  searchWeather(city);
+
+
+// Current Weather Function
+function getCurrentWeatherByFetch(cityName) {
+    fetch('https://api.openweathermap.org/data/2.5/weather?q=' + cityName + '&units=imperial&appid=' + apiKey)
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (weatherData) {
+
+            console.log(weatherData)
+            // Gets current Weather Icon
+            var iconID = weatherData.weather[0].icon
+            var iconImg = document.createElement('img')
+            iconImg.src = 'https://openweathermap.org/img/wn/' + iconID + '.png'
+            
+            // Gets city name
+            var city = weatherData.name
+            var cityEl = document.createElement('h3')
+            cityEl.innerText = 'Current weather for: ' + city
+            searchCard.appendChild(cityEl)
+
+            // Current Sky Conditions
+            var currentSkyCondition = weatherData.weather[0].main
+            var currentSkyConditionEl = document.createElement('p')
+            currentSkyConditionEl.classList.add('skydescription')
+            currentSkyConditionEl.innerText = currentSkyCondition
+            
+            // Current Temp
+            var currentTemp = weatherData.main.temp
+            var currentTempEl = document.createElement('li')
+            currentTempEl.innerText = "Temp: " + currentTemp
+            
+            // Current Humidity
+            var currentHumidity = weatherData.main.temp
+            var currentHumidityEl = document.createElement('li')
+            currentHumidityEl.innerText = "Humidity: " + currentHumidity
+            
+            // Current windspeed
+            var currentWindSpeed = weatherData.wind.speed
+            var currentWindSpeedEl = document.createElement('li')
+            currentWindSpeedEl.innerText = "Wind: " + currentWindSpeed
+            
+            // DOM appends
+            var weatherCard = document.createElement('div')
+            weatherCard.classList.add('currentWeatherCard')
+            weatherCard.appendChild(iconImg)
+            weatherCard.appendChild(currentSkyConditionEl)
+            weatherCard.appendChild(currentTempEl)
+            weatherCard.appendChild(currentHumidityEl)
+            weatherCard.appendChild(currentWindSpeedEl)
+            searchCard.appendChild(weatherCard)
+
+
+        })
+}
+
+
+
+// Five Day Forecast Function
+function getForecastByFetch(cityName) {
+    fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + cityName + '&units=imperial&appid=' + apiKey)
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (weatherData) {
+
+
+            // Array to loop though API and give user elements at 12pm each day
+            var listArray = weatherData.list
+            for (var i = 0; i < listArray.length; i += 8) {
+                // Icons
+                var iconNumber = listArray[i].weather[0].icon
+                var iconImg = document.createElement('img')
+                iconImg.src = 'https://openweathermap.org/img/wn/' + iconNumber + '.png'
+
+                // Date
+                var date = listArray[i].dt_txt.split(' ')[0]
+                var dateEl = document.createElement('p')
+                dateEl.innerText = date
+
+                // Temperature
+                var temp = listArray[i].main.temp
+                var tempEl = document.createElement('li')
+                tempEl.innerText = 'Temp: ' + temp
+
+                // Humidity
+                var humidity = listArray[i].main.humidity
+                var humidityEl = document.createElement('li')
+                humidityEl.innerText = 'Humidity: ' + humidity
+
+                // Wind Speed
+                var windSpeed = listArray[i].wind.speed
+                var windEl = document.createElement('li')
+                windEl.innerText = "Wind: " + windSpeed + " mph"
+
+                // Sky Condition
+                var skyCondition = listArray[i].weather[0].main
+                var skyConditionEl = document.createElement('p')
+                skyConditionEl.classList.add('skydescription')
+                skyConditionEl.innerText = skyCondition
+
+
+                // DOM appends
+                var forecastCard = document.createElement('div')
+                forecastCard.classList.add('forecastCard')
+                forecastCard.appendChild(iconImg)
+                forecastCard.appendChild(skyConditionEl)
+                forecastCard.appendChild(dateEl)
+                forecastCard.appendChild(tempEl)
+                forecastCard.appendChild(humidityEl)
+                forecastCard.appendChild(windEl)
+                forecastContainer.appendChild(forecastCard)
+
+            }
+        })
+}
+
+
+
+
+
+// click listener for search button
+searchBtn.addEventListener('click', function (event) {
+    var searched = citySearched.value
+    event.preventDefault()
+    getForecastByFetch(searched)
+    getCurrentWeatherByFetch(searched)
+
 });
 
-// Function to search for weather data
-function searchWeather(city) {
-  const apiEndpoint = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
 
-  // Make an API call to retrieve weather data for the given city
-  fetch(apiEndpoint)
-    .then(response => response.json())
-    .then(data => {
-      // Display the current weather conditions
-      const currentWeather = getCurrentWeather(data);
-      displayCurrentWeather(currentWeather);
-
-      // Fetch the 5-day forecast data
-      const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
-      return fetch(forecastEndpoint);
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Display the 5-day forecast
-      const forecast = getForecast(data);
-      displayForecast(forecast);
-
-      // Add the city to the search history
-      addToSearchHistory(city);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-}
-
-// Function to extract current weather data from the API response
-function getCurrentWeather(data) {
-  // Extract the necessary data from the API response and return it as an object
-  const currentWeather = {
-    city: data.name,
-    date: formatDate(data.dt),
-    weather: data.weather[0].main,
-    temperature: `${kelvinToCelsius(data.main.temp)}°C`,
-    humidity: `${data.main.humidity}%`,
-    windSpeed: `${data.wind.speed} km/h`
-  };
-
-  return currentWeather;
-}
-
-// Function to extract forecast data from the API response
-function getForecast(data) {
-  // Extract the necessary data from the API response and return it as an array of objects
-  const forecast = [];
-
-  for (let i = 0; i < data.list.length; i += 8) {
-    const forecastItem = {
-      date: formatDate(data.list[i].dt),
-      weather: data.list[i].weather[0].main,
-      temperature: `${kelvinToCelsius(data.list[i].main.temp)}°C`,
-      humidity: `${data.list[i].main.humidity}%`,
-      windSpeed: `${data.list[i].wind.speed} km/h`
-    };
-
-    forecast.push(forecastItem);
-  }
-
-  return forecast;
-}
-
-// Function to format the date
-function formatDate(timestamp) {
-  const date = new Date(timestamp * 1000);
-  const options = { weekday: 'short', month: 'short', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
-}
-
-// Function to convert temperature from Kelvin to Celsius
-function kelvinToCelsius(kelvin) {
-  return Math.round(kelvin - 273.15);
-}
-
-// Rest of the code remains the same
-// ...
-
-// // Event listener for form submission
-// document.getElementById('search-form').addEventListener('submit', function(event) {
-//     event.preventDefault();
-//     const city = document.getElementById('city-input').value;
-//     searchWeather(city);
-//   });
-  
-//   // Function to search for weather data
-//   function searchWeather(city) {
-//     // Simulate API call and data retrieval
-//     const currentWeather = simulateCurrentWeather(city);
-//     const forecast = simulateForecast(city);
-  
-//     // Display the current weather conditions
-//     displayCurrentWeather(currentWeather);
-  
-//     // Display the 5-day forecast
-//     displayForecast(forecast);
-  
-//     // Add the city to the search history
-//     addToSearchHistory(city);
-//   }
-  
-//   // Function to simulate current weather data
-//   function simulateCurrentWeather(city) {
-//     // Simulated data
-//     return {
-//       city: city,
-//       date: '2023-07-15',
-//       weather: 'Sunny',
-//       temperature: '25°C',
-//       humidity: '50%',
-//       windSpeed: '10 km/h'
-//     };
-//   }
-  
-//   // Function to simulate forecast data
-//   function simulateForecast(city) {
-//     // Simulated data
-//     return [
-//       {
-//         date: '2023-07-16',
-//         weather: 'Cloudy',
-//         temperature: '24°C',
-//         humidity: '55%',
-//         windSpeed: '12 km/h'
-//       },
-//       {
-//         date: '2023-07-17',
-//         weather: 'Rainy',
-//         temperature: '20°C',
-//         humidity: '60%',
-//         windSpeed: '15 km/h'
-//       },
-//       {
-//         date: '2023-07-18',
-//         weather: 'Sunny',
-//         temperature: '28°C',
-//         humidity: '45%',
-//         windSpeed: '8 km/h'
-//       },
-//       {
-//         date: '2023-07-19',
-//         weather: 'Partly Cloudy',
-//         temperature: '26°C',
-//         humidity: '50%',
-//         windSpeed: '10 km/h'
-//       },
-//       {
-//         date: '2023-07-20',
-//         weather: 'Sunny',
-//         temperature: '27°C',
-//         humidity: '48%',
-//         windSpeed: '9 km/h'
-//       }
-//     ];
-//   }
-  
-//   // Function to display current weather conditions
-//   function displayCurrentWeather(current) {
-//     const currentWeatherElement = document.getElementById('current-weather');
-//     currentWeatherElement.innerHTML = `
-//       <h2>${current.city}</h2>
-//       <p>Date: ${current.date}</p>
-//       <p>Weather: ${current.weather}</p>
-//       <p>Temperature: ${current.temperature}</p>
-//       <p>Humidity: ${current.humidity}</p>
-//       <p>Wind Speed: ${current.windSpeed}</p>
-//     `;
-//   }
-  
-//   // Function to display the 5-day forecast
-//   function displayForecast(forecast) {
-//     const forecastElement = document.getElementById('forecast');
-//     forecastElement.innerHTML = '';
-  
-//     for (let day of forecast) {
-//       forecastElement.innerHTML += `
-//         <div>
-//           <h3>${day.date}</h3>
-//           <p>Weather: ${day.weather}</p>
-//           <p>Temperature: ${day.temperature}</p>
-//           <p>Humidity: ${day.humidity}</p>
-//           <p>Wind Speed: ${day.windSpeed}</p>
-//         </div>
-//       `;
-//     }
-//   }
-  
-//   // Function to add the city to the search history
-//   function addToSearchHistory(city) {
-//     const searchHistoryElement = document.getElementById('search-history');
-//     const cityElement = document.createElement('p');
-//     cityElement.textContent = city;
-//     searchHistoryElement.appendChild(cityElement);
-  
-//     // Add event listener to the city element
-//     cityElement.addEventListener('click', function() {
-//       searchWeather(city);
-//     });
-//   }
- ///////////////////////////////////////////////////////////////////////////////////////////// 
-// const apiKey = '312ef17758b755a8564935f0cd1d338b';
-
-// // Event listener for form submission
-// document.getElementById('search-form').addEventListener('submit', function(event) {
-//   event.preventDefault();
-//   const city = document.getElementById('city-input').value;
-//   searchWeather(city);
-// });
-
-// // Function to search for weather data
-// function searchWeather(city) {
-
-//   fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`)
-//     .then(response => response.json())
-//     .then(data => {
-//       // Display the current weather conditions
-//       displayCurrentWeather(data.current);
-
-//       // Display the 5-day forecast
-//       displayForecast(data.forecast);
-
-//       // Add the city to the search history
-//       addToSearchHistory(city);
-//     })
-//     .catch(error => {
-//       console.error('Error:', error);
-//     });
-// }
-
-// // Function to display current weather conditions
-// function displayCurrentWeather(current) {
-//   const currentWeatherElement = document.getElementById('current-weather');
-//   currentWeatherElement.innerHTML = `
-//     <h2>${current.city}</h2>
-//     <p>Date: ${current.date}</p>
-//     <p>Weather: ${current.weather}</p>
-//     <p>Temperature: ${current.temperature}</p>
-//     <p>Humidity: ${current.humidity}</p>
-//     <p>Wind Speed: ${current.windSpeed}</p>
-//   `;
-// }
-
-// // Function to display the 5-day forecast
-// function displayForecast(forecast) {
-//   const forecastElement = document.getElementById('forecast');
-//   forecastElement.innerHTML = '';
-
-//   for (let day of forecast) {
-//     forecastElement.innerHTML += `
-//       <div>
-//         <h3>${day.date}</h3>
-//         <p>Weather: ${day.weather}</p>
-//         <p>Temperature: ${day.temperature}</p>
-//         <p>Humidity: ${day.humidity}</p>
-//         <p>Wind Speed: ${day.windSpeed}</p>
-//       </div>
-//     `;
-//   }
-// }
-
-// // Function to add the city to the search history
-// function addToSearchHistory(city) {
-//   const searchHistoryElement = document.getElementById('search-history');
-//   const cityElement = document.createElement('p');
-//   cityElement.textContent = city;
-//   searchHistoryElement.appendChild(cityElement);
-
-//   // Add event listener to the city element
-//   cityElement.addEventListener('click', function() {
-//     searchWeather(city);
-//   });
-// }
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// const apiKey = '312ef17758b755a8564935f0cd1d338b';
-//const apiAdress = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`
-// fetch(apiAdress)
-// .then(response => response.json())
-// .then(data => console.log(reponse)
+// allows user to hit the'Enter' key on the keyboard
+citySearched.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        searchBtn.click();
+    }
+});
