@@ -40,9 +40,12 @@ button {
 }
 
 ul {
+  margin: 5px;
   display: flex;
-  flex-direction: column;
+  flex-direction:column;
+  justify-content:flex-start;
   list-style: none;
+  padding: 0;
   
 }
 
