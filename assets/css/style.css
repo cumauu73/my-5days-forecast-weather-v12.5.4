@@ -41,8 +41,8 @@ button {
   border: solid black 3px;
 }
 .box {
-  margin: 1em;
-  padding: 1em;
+  margin: 10px;
+  padding: 10px;
   border: solid black 3px;
 }
 #forecast {
@@ -56,4 +56,9 @@ button {
 .container {
   display: flex;
   flex-direction: row;
+}
+.ust {
+  display: flex;
+  flex-direction: row;
+  border: solid black 3px;
 }
